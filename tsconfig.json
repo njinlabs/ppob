@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "strict": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx",
+    "paths": {
+      "@app-types/*": ["./types/*"],
+      "@app-modules/*": ["./modules/*"],
+      "@app-middlewares/*": ["./middlewares/*"],
+      "@app-utils/*": ["./utils/*"],
+      "@app-validations/*": ["./validations/*"],
+      "@app-entities/*": ["./database/entities/*"],
+      "@app-config/*": ["./config/*"],
+      "@app-handlers/*": ["./handlers/*"],
+      "@app-crons/*": ["./crons/*"]
+    },
+    "moduleResolution": "nodenext",
+    "module": "NodeNext",
+    "resolveJsonModule": true
+  }
+}
