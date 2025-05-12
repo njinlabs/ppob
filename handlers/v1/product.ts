@@ -6,7 +6,7 @@ import validator from "@app-middlewares/validator.js";
 import { App } from "@app-types/app.js";
 import { getBrandByPrefix } from "@app-utils/cell-provider.js";
 import { calculateProductPricing } from "@app-utils/pricing.js";
-import { phone } from "@app-validations/general.js";
+import { phone, uuidEntityParam } from "@app-validations/general.js";
 import { productFilter } from "@app-validations/product.js";
 import { Hono } from "hono";
 import { FindManyOptions } from "typeorm";
@@ -33,6 +33,11 @@ const product = new Hono<App>()
         ).serialize(),
       });
     }
+  )
+  .get(
+    "/:entity",
+    validator("param", uuidEntityParam(Product, "id")),
+    async (c) => c.json({ data: await c.req.valid("param") })
   )
   .get("/", auth("user"), validator("query", productFilter), async (c) => {
     let filters: FindManyOptions<Product> = {
@@ -65,11 +70,7 @@ const product = new Hono<App>()
     const products = await Product.find(filters);
 
     return c.json({
-      data: await Promise.all(
-        products.map((el) =>
-          calculateProductPricing(el, c.var.auth.user! as User)
-        )
-      ),
+      data: await calculateProductPricing(products, c.var.auth.user! as User),
     });
   });
 

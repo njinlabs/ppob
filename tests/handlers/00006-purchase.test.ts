@@ -1,4 +1,5 @@
 import Product from "@app-entities/product.js";
+import Purchase from "@app-entities/purchase.js";
 import User from "@app-entities/user.js";
 import app from "@app-handlers/index.js";
 import auth from "@app-modules/auth.js";
@@ -51,6 +52,27 @@ describe("Purchase API", async () => {
 
     await user.wallet.reload();
     expect(user.wallet.balance.value).toBe(balanceExpected.value);
+  });
+
+  test("Get purchase by id", async () => {
+    const purchase = await Purchase.findOneBy({ userId: user.id });
+
+    expect(purchase).toBeInstanceOf(Purchase);
+
+    const response = await client.v1.purchase[":entity"].$get(
+      {
+        param: {
+          entity: purchase!.id,
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    expect(response.status).toBe(200);
   });
 
   test("Read user purchase transaction histories", async () => {

@@ -30,6 +30,18 @@ const purchase = new Hono<App>()
       }))
     );
   })
+  .get(
+    "/:entity",
+    validator("param", uuidEntityParam(Purchase, "id")),
+    async (c) => {
+      const purchase = await c.req.valid("param");
+
+      if (purchase.userId !== c.var.auth.userId)
+        return c.json({ message: "Not Allowed" }, 405);
+
+      return c.json({ data: purchase.serialize() });
+    }
+  )
   .post(
     "/:entity",
     validator("param", uuidEntityParam(Product, "id")),

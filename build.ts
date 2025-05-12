@@ -1,4 +1,4 @@
-import pkg from "./package.json" with {type: 'json'}
+import pkg from "./package.json" with {type: 'json'};
 
 (async () => {
   await Bun.build({
@@ -6,6 +6,17 @@ import pkg from "./package.json" with {type: 'json'}
     outdir: "./out",
     external: Object.keys(pkg.dependencies),
     target: "node",
-    format: "cjs"
+    format: "cjs",
   });
+
+  const packageJson = {
+    name: "ppob",
+    module: "./app.js",
+    scripts: {
+      start: "node app.js"
+    },
+    dependencies: pkg.dependencies,
+  };
+
+  await Bun.write("./out/package.json", JSON.stringify(packageJson));
 })();

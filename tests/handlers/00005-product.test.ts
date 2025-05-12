@@ -1,3 +1,4 @@
+import Product from "@app-entities/product.js";
 import User from "@app-entities/user.js";
 import app from "@app-handlers/index.js";
 import auth from "@app-modules/auth.js";
@@ -24,6 +25,24 @@ describe("Product API", async () => {
       {
         query: {
           brand: provider.id,
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    expect(response.status).toBe(200);
+  });
+
+  test("Get product", async () => {
+    const product = (await Product.find({}))[0];
+    const response = await client.v1.product[":entity"].$get(
+      {
+        param: {
+          entity: product.id,
         },
       },
       {

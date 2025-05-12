@@ -12,6 +12,7 @@
         "class-transformer": "^0.5.1",
         "cron": "^4.3.0",
         "currency.js": "^2.0.4",
+        "dotenv": "^16.5.0",
         "hono": "^4.7.7",
         "luxon": "^3.6.1",
         "mysql2": "^3.14.0",
