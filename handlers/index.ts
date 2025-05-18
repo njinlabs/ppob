@@ -1,15 +1,16 @@
+import log from "@app-modules/logger.js";
+import { serveStatic } from "@hono/node-server/serve-static";
 import { Hono } from "hono";
-import auth from "./auth.js";
-import v1 from "./v1/index.js";
-import membership from "./membership.js";
 import { HTTPException } from "hono/http-exception";
 import { TypeORMError } from "typeorm";
-import user from "./user.js";
-import pricing from "./pricing.js";
-import log from "@app-modules/logger.js";
+import auth from "./auth.js";
+import brand from "./brand.js";
 import install from "./install.js";
+import membership from "./membership.js";
+import pricing from "./pricing.js";
 import product from "./product.js";
-import { serveStatic } from "@hono/node-server/serve-static";
+import user from "./user.js";
+import v1 from "./v1/index.js";
 
 const app = new Hono()
   .use("/uploads/*", serveStatic({ root: "./" }))
@@ -19,7 +20,8 @@ const app = new Hono()
   .route("/membership", membership)
   .route("/pricing", pricing)
   .route("/install", install)
-  .route("/product", product);
+  .route("/product", product)
+  .route("/brand", brand);
 
 app.onError(async (err, c) => {
   if (err instanceof HTTPException)

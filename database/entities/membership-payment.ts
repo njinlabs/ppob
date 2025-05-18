@@ -25,7 +25,7 @@ import Membership from "./membership.js";
 import User from "./user.js";
 import db from "@app-modules/database.js";
 
-@Entity()
+@Entity("membership_payments")
 export default class MembershipPayment extends Base {
   @PrimaryGeneratedColumn("uuid")
   public id!: string;

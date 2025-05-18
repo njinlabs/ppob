@@ -12,7 +12,7 @@ import AdminToken from "./admin-token.js";
 import Base from "./base.js";
 import { type ControlAvailable } from "@app-types/acl.js";
 
-@Entity()
+@Entity("admins")
 export default class Admin extends Base {
   @PrimaryGeneratedColumn("uuid")
   public id!: string;

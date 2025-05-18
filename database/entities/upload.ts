@@ -11,7 +11,7 @@ import {
 import Base from "./base.js";
 import { Exclude } from "class-transformer";
 
-@Entity()
+@Entity("uploads")
 export default class Upload extends Base {
   @PrimaryGeneratedColumn("uuid")
   public id!: string;

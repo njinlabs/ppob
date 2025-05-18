@@ -1,31 +1,28 @@
+import { generateInvoice } from "@app-utils/invoice.js";
+import {
+  TransformCurrency,
+  transformCurrency,
+} from "@app-utils/transform-currency.js";
 import {
   calculateFee,
   Fee,
   TransformFee,
   transformFee,
 } from "@app-utils/transform-fee.js";
-import {
-  TransformCurrency,
-  transformCurrency,
-} from "@app-utils/transform-currency.js";
+import { Type } from "class-transformer";
 import currency from "currency.js";
 import {
   BeforeInsert,
   Column,
   Entity,
   ManyToOne,
-  MoreThanOrEqual,
-  OneToOne,
   PrimaryGeneratedColumn,
   type Relation,
 } from "typeorm";
 import Base from "./base.js";
 import User from "./user.js";
-import { generateInvoice } from "@app-utils/invoice.js";
-import { DateTime } from "luxon";
-import { Type } from "class-transformer";
 
-@Entity()
+@Entity("topups")
 export default class TopUp extends Base {
   @PrimaryGeneratedColumn("uuid")
   public id!: string;

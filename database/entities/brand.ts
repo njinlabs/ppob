@@ -1,10 +1,18 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import Base from "./base.js";
 import Product from "./product.js";
 import { Type } from "class-transformer";
 import PricingRule from "./pricing-rule.js";
+import Upload from "./upload.js";
 
-@Entity()
+@Entity("brands")
 export default class Brand extends Base {
   @PrimaryGeneratedColumn("uuid")
   public id!: string;
@@ -19,4 +27,12 @@ export default class Brand extends Base {
   @OneToMany(() => PricingRule, (pricing) => pricing.brand)
   @Type(() => PricingRule)
   public pricings!: PricingRule[];
+
+  @OneToOne(() => Upload, {
+    nullable: true,
+    cascade: true,
+    onDelete: "SET NULL",
+  })
+  @JoinColumn()
+  public image!: Upload | null;
 }

@@ -11,7 +11,7 @@ import {
 import Admin from "./admin.js";
 import Base from "./base.js";
 
-@Entity()
+@Entity("admin_tokens")
 export default class AdminToken extends Base {
   @PrimaryGeneratedColumn()
   public id!: number;

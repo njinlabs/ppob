@@ -11,7 +11,7 @@ import {
 import Base from "./base.js";
 import User from "./user.js";
 
-@Entity()
+@Entity("user_tokens")
 export default class UserToken extends Base {
   @PrimaryGeneratedColumn()
   public id!: number;

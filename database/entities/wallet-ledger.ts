@@ -15,7 +15,7 @@ import TopUp from "./topup.js";
 import Wallet from "./wallet.js";
 import { Type } from "class-transformer";
 
-@Entity()
+@Entity("wallet_ledgers")
 export default class WalletLedger extends Base {
   @PrimaryGeneratedColumn("uuid")
   public id!: string;

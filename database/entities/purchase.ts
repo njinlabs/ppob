@@ -32,7 +32,7 @@ import digiflazz from "@app-modules/digiflazz.js";
 import log from "@app-modules/logger.js";
 import { createId } from "@paralleldrive/cuid2";
 
-@Entity()
+@Entity("purchases")
 export default class Purchase extends Base {
   @PrimaryGeneratedColumn("uuid")
   public id!: string;

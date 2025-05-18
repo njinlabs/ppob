@@ -23,7 +23,7 @@ export type Pricing = {
   override?: currency;
 };
 
-@Entity()
+@Entity("pricing_rules")
 export default class PricingRule extends Base {
   @PrimaryGeneratedColumn("uuid")
   public id!: string;

@@ -4,7 +4,7 @@ import Base from "./base.js";
 import Membership from "./membership.js";
 import PricingRule from "./pricing-rule.js";
 
-@Entity()
+@Entity("pricing_packages")
 export default class PricingPackage extends Base {
   @PrimaryGeneratedColumn("uuid")
   public id!: string;

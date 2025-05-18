@@ -3,7 +3,6 @@ import { hash } from "argon2";
 import { Exclude, Type } from "class-transformer";
 import currency from "currency.js";
 import {
-  AfterLoad,
   BeforeInsert,
   BeforeUpdate,
   Column,
@@ -19,13 +18,13 @@ import {
 import Base from "./base.js";
 import MembershipPayment from "./membership-payment.js";
 import Membership from "./membership.js";
-import UserToken from "./user-token.js";
-import Wallet from "./wallet.js";
 import PricingPackage from "./pricing-package.js";
 import Purchase from "./purchase.js";
 import Upload from "./upload.js";
+import UserToken from "./user-token.js";
+import Wallet from "./wallet.js";
 
-@Entity()
+@Entity("users")
 export default class User extends Base {
   @PrimaryGeneratedColumn("uuid")
   public id!: string;

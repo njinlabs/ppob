@@ -4,7 +4,7 @@ import Base from "./base.js";
 import PricingRule from "./pricing-rule.js";
 import Product from "./product.js";
 
-@Entity()
+@Entity("categories")
 export default class Category extends Base {
   @PrimaryGeneratedColumn("uuid")
   public id!: string;

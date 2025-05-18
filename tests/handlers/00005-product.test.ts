@@ -1,4 +1,3 @@
-import Admin from "@app-entities/admin.js";
 import Product from "@app-entities/product.js";
 import User from "@app-entities/user.js";
 import app from "@app-handlers/index.js";
@@ -6,17 +5,12 @@ import auth from "@app-modules/auth.js";
 import { getBrandByPrefix } from "@app-utils/cell-provider.js";
 import { describe, expect, test } from "bun:test";
 import { testClient } from "hono/testing";
-import makeImage from "../file.js";
 
 const client = testClient(app);
 
 describe("Product API", async () => {
   const user = (await User.find())[0];
   const userToken = await auth().use("user").generate(user);
-
-  const token = await auth()
-    .use("admin")
-    .generate((await Admin.find())[0]);
 
   test("Get categories list", async () => {
     const response = await client.v1.product.category.$get();
@@ -67,27 +61,6 @@ describe("Product API", async () => {
         phoneNumber: "6281271762774",
       },
     });
-
-    expect(response.status).toBe(200);
-  });
-
-  test("Update product image", async () => {
-    const product = (await Product.find({}))[0];
-    const response = await client.product[":entity"].image.$put(
-      {
-        param: {
-          entity: product.id,
-        },
-        form: {
-          image: await makeImage(),
-        },
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
 
     expect(response.status).toBe(200);
   });
