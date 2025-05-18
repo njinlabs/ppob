@@ -1,3 +1,6 @@
+import digiflazz from "@app-modules/digiflazz.js";
+import log from "@app-modules/logger.js";
+import { PayResponse, TopupResponse } from "@app-types/digiflazz.js";
 import { generateInvoice } from "@app-utils/invoice.js";
 import {
   TransformCurrency,
@@ -9,10 +12,12 @@ import {
   TransformFee,
   transformFee,
 } from "@app-utils/transform-fee.js";
+import { createId } from "@paralleldrive/cuid2";
 import { Type } from "class-transformer";
 import currency from "currency.js";
 import {
   AfterInsert,
+  AfterUpdate,
   BeforeInsert,
   Column,
   Entity,
@@ -23,16 +28,8 @@ import {
 import Base from "./base.js";
 import Product from "./product.js";
 import User from "./user.js";
-import {
-  InqResponse,
-  PayResponse,
-  TopupResponse,
-} from "@app-types/digiflazz.js";
-import digiflazz from "@app-modules/digiflazz.js";
-import log from "@app-modules/logger.js";
-import { createId } from "@paralleldrive/cuid2";
 
-@Entity("purchases")
+@Entity()
 export default class Purchase extends Base {
   @PrimaryGeneratedColumn("uuid")
   public id!: string;
@@ -70,7 +67,7 @@ export default class Purchase extends Base {
   public name!: string;
 
   @Column()
-  public status!: "PENDING" | "SUCCESS" | "FAILED";
+  public status!: "PENDING" | "SUCCESS" | "FAILED" | "INQUIRY";
 
   @Column("json")
   public details!: Partial<TopupResponse>;
@@ -99,7 +96,18 @@ export default class Purchase extends Base {
 
   @BeforeInsert()
   public async assignRequiredData() {
-    const { result: fees, total } = calculateFee(this.product.price, this.fees);
+    if (this.product.type === "PASCA") {
+      this.status = "INQUIRY";
+      this.inq = await digiflazz().checkInq(this.product.toRaw(), {
+        customerNumber: this.customerNumber,
+        refId: this.ref,
+      });
+    }
+
+    const { result: fees, total } = calculateFee(
+      this.product.type === "PREPAID" ? this.product.price : this.inq.price!,
+      this.fees
+    );
     this.invoiceNumber = await generateInvoice(
       process.env.INV_FORMAT_TOPUP ?? "PUR-%date:yyyyLLdd%-%000000%",
       Purchase,
@@ -111,32 +119,25 @@ export default class Purchase extends Base {
     this.price = this.product.price;
     this.inq = {};
     this.ref = createId();
-
-    if (this.product.type === "PASCA") {
-      this.inq = await digiflazz().checkInq(this.product.toRaw(), {
-        customerNumber: this.customerNumber,
-        refId: this.ref,
-      });
-    }
   }
 
   @AfterInsert()
   public async proceed() {
-    (this.product.type === "PREPAID"
-      ? digiflazz().topup(this.product.toRaw(), {
+    if (this.product.type === "PREPAID") {
+      digiflazz()
+        .topup(this.product.toRaw(), {
           customerNumber: this.customerNumber,
           refId: this.ref,
         })
-      : digiflazz().pay(this.inq as InqResponse)
-    )
-      .then(() => {
-        log().log.info(
-          `PEMBAYARAN DIGIFLAZZ (${this.customerNumber} - ${this.name}) BERHASIL`
-        );
-      })
-      .catch((e) => {
-        log().log.info(`PEMBAYARAN ${this.invoiceNumber} GAGAL`);
-        log().log.error(e);
-      });
+        .then(() => {
+          log().log.info(
+            `PEMBAYARAN DIGIFLAZZ (${this.customerNumber} - ${this.name}) BERHASIL`
+          );
+        })
+        .catch((e) => {
+          log().log.info(`PEMBAYARAN ${this.invoiceNumber} GAGAL`);
+          log().log.error(e);
+        });
+    }
   }
 }

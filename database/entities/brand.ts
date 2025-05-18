@@ -32,6 +32,7 @@ export default class Brand extends Base {
     nullable: true,
     cascade: true,
     onDelete: "SET NULL",
+    eager: true,
   })
   @JoinColumn()
   public image!: Upload | null;
