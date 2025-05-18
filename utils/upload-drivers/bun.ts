@@ -30,7 +30,7 @@ export default class BunUpload implements UploadDriver {
 
   async getUrl(id: string) {
     return `${
-      process.env.LOCAL_UPLOAD_BASE_URL?.replace(/\/+$/, "") || ""
+      process.env.BUN_UPLOAD_BASE_URL?.replace(/\/+$/, "") || ""
     }/${id}`;
   }
 }
