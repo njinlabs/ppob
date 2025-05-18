@@ -9,8 +9,10 @@ import pricing from "./pricing.js";
 import log from "@app-modules/logger.js";
 import install from "./install.js";
 import product from "./product.js";
+import { serveStatic } from "@hono/node-server/serve-static";
 
 const app = new Hono()
+  .use("/uploads/*", serveStatic({ root: "./" }))
   .route("/v1", v1)
   .route("/auth", auth)
   .route("/user", user)

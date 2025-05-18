@@ -5,11 +5,11 @@ import currency from "currency.js";
 export async function calculateProductPricing(
   product: Product,
   user: User
-): Promise<Product>;
+): Promise<Record<string, any>>;
 export async function calculateProductPricing(
   product: Product[],
   user: User
-): Promise<Product[]>;
+): Promise<Record<string, any>[]>;
 export async function calculateProductPricing(
   product: Product | Product[],
   user: User

@@ -25,7 +25,7 @@ const wallet = new Hono<App>()
   })
   .get("/", async (c) => {
     const wallet = await Wallet.findOneByOrFail({
-      user: c.var.auth.user! as User,
+      userId: c.var.auth.user!.id,
     });
 
     return c.json({ data: wallet.serialize() });

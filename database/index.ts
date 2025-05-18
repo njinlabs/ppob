@@ -9,6 +9,7 @@ import PricingRule from "@app-entities/pricing-rule.js";
 import Product from "@app-entities/product.js";
 import Purchase from "@app-entities/purchase.js";
 import TopUp from "@app-entities/topup.js";
+import Upload from "@app-entities/upload.js";
 import UserToken from "@app-entities/user-token.js";
 import User from "@app-entities/user.js";
 import WalletLedger from "@app-entities/wallet-ledger.js";
@@ -26,6 +27,7 @@ export const AppDataSource = () =>
     synchronize: true,
     logging: false,
     entities: [
+      Upload,
       Admin,
       AdminToken,
       Category,

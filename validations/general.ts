@@ -1,7 +1,8 @@
 import Base from "@app-entities/base.js";
-import { FindOneOptions, FindOptionsWhere } from "typeorm";
-import { z, ZodEffects, ZodNumber, ZodObject, ZodString, ZodType } from "zod";
+import Upload from "@app-entities/upload.js";
 import currencyLib from "currency.js";
+import { FindOneOptions, FindOptionsWhere } from "typeorm";
+import { z, ZodNumber, ZodString, ZodType } from "zod";
 
 export const unique = <Entity extends typeof Base, T>(
   validation: ZodType<T>,
@@ -81,3 +82,26 @@ export const metaData = z.object({
   page: z.coerce.number().min(1).optional().default(1),
   search: z.string().optional(),
 });
+
+export const upload = ({ mime, size }: { mime?: string[]; size?: number }) =>
+  z.instanceof(File).transform(async (file, ctx) => {
+    if (mime && !mime.includes(file.type)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Mime type of file not allowed",
+      });
+
+      return z.NEVER;
+    }
+
+    if (size && file.size > size) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "File size is too large",
+      });
+
+      return z.NEVER;
+    }
+
+    return await Upload.makeFromFile(file);
+  });

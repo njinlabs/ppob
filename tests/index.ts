@@ -10,7 +10,7 @@ const gracefullStop = () =>
   });
 
 beforeAll(async () => {
-  await bootstrap(["Log", "Database", "Auth", "Digiflazz", "Server"]);
+  await bootstrap(["Log", "Database", "Upload", "Auth", "Digiflazz", "Server"]);
 });
 
 afterAll(async () => {

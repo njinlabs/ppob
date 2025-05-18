@@ -6,7 +6,7 @@ import server from "@app-modules/server.js";
 import bootstrap from "@app-utils/bootstrap.js";
 import { updateProduct } from "@app-crons/update-product.js";
 
-bootstrap(["Log", "Database", "Auth", "Digiflazz", "Server", "Cron"])
+bootstrap(["Log", "Database", "Upload", "Auth", "Digiflazz", "Server", "Cron"])
   .then(() => {
     updateProduct().process();
     server().start(app);

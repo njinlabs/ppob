@@ -8,6 +8,7 @@ import { DataSource } from "typeorm";
 import { AppDataSource } from "../database/index.js";
 import PricingPackage from "@app-entities/pricing-package.js";
 import Wallet from "@app-entities/wallet.js";
+import Upload from "@app-entities/upload.js";
 
 export class Database {
   private static instance: Database;
@@ -41,6 +42,7 @@ export class Database {
       brand: await Brand.count(),
       product: await Product.count(),
       pricing: await PricingPackage.count(),
+      uploaded: await Upload.count(),
     };
 
     console.table(counts);

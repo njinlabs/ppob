@@ -40,6 +40,7 @@ describe("Membership", async () => {
       {
         json: {
           name: "Reseller",
+          description: "Lorem ipsum",
           price: faker.number.int({ min: 10000, max: 500000 }),
           referralLimit: 25,
         },
@@ -68,6 +69,7 @@ describe("Membership", async () => {
         },
         json: {
           name: membership.name,
+          description: "Lorem ipsum",
           price: faker.number.int({ min: 10000, max: 500000 }),
           referralLimit: 25,
         },
@@ -159,6 +161,7 @@ describe("Membership", async () => {
       {
         json: {
           name: "Reseller",
+          description: "Lorem ipsum",
           price: faker.number.int({ min: 10000, max: 500000 }),
           referralLimit: 25,
         },
@@ -173,6 +176,29 @@ describe("Membership", async () => {
     membership = (await Membership.findOneBy({
       id: (await response.json()).data.id,
     }))!;
+  });
+
+  test("Read membership package by user", async () => {
+    const response = await client.v1.membership.$get(
+      {
+        query: {
+          page: "1",
+          perPage: "200",
+          search: "",
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    expect(response.status).toBe(200);
+
+    const result = await response.json();
+    expect(result.data).toBeArray();
+    expect(result.data.length).toBeGreaterThan(0);
   });
 
   test("User membership payment", async () => {

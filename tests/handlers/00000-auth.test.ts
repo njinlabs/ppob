@@ -5,6 +5,7 @@ import app from "@app-handlers/index.js";
 import { faker } from "@faker-js/faker";
 import { describe, expect, test } from "bun:test";
 import { testClient } from "hono/testing";
+import makeImage from "../file.js";
 
 const client = testClient(app);
 
@@ -150,6 +151,28 @@ describe("User Auth", async () => {
   test("User check token", async () => {
     const response = await client.v1.auth["check-token"].$get(
       {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    expect(response.status).toBe(200);
+  });
+
+  test("User update profile", async () => {
+    const response = await client.v1.user.$put(
+      {
+        form: {
+          avatar: await makeImage(),
+          email: faker.internet.email(),
+          fullname: faker.person.fullName(),
+          phone: faker.phone
+            .number({ style: "international" })
+            .replace(/^\+/, ""),
+        },
+      },
       {
         headers: {
           Authorization: `Bearer ${token}`,

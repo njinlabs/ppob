@@ -300,7 +300,7 @@ describe("Pricing", async () => {
     pricing.sortRules();
 
     expect((await calculateProductPricing(product, user)).price).toBe(
-      pricing.rules[0].rules.override?.value
+      pricing.rules[0].rules.override!.value
     );
   });
 });

@@ -1,7 +1,7 @@
 import User from "@app-entities/user.js";
 import { FindOptionsWhere } from "typeorm";
 import { z } from "zod";
-import { currency } from "./general.js";
+import { currency, phone, upload } from "./general.js";
 
 export const userTransform =
   <T extends keyof FindOptionsWhere<User>>(field: T) =>
@@ -22,4 +22,16 @@ export const userTransform =
 
 export const userTopUp = z.object({
   amount: currency(z.number().min(1)),
+});
+
+export const updateProfile = z.object({
+  fullname: z.string(),
+  email: z.string().email(),
+  phone,
+  avatar: upload({
+    mime: ["image/jpeg", "image/png", "image/webp"],
+    size: 3 * 1024 * 1024,
+  })
+    .optional()
+    .nullable(),
 });

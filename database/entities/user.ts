@@ -23,6 +23,7 @@ import UserToken from "./user-token.js";
 import Wallet from "./wallet.js";
 import PricingPackage from "./pricing-package.js";
 import Purchase from "./purchase.js";
+import Upload from "./upload.js";
 
 @Entity()
 export default class User extends Base {
@@ -95,6 +96,15 @@ export default class User extends Base {
   })
   @Type(() => Wallet)
   public wallet!: Relation<Wallet>;
+
+  @OneToOne(() => Upload, {
+    nullable: true,
+    cascade: true,
+    onDelete: "SET NULL",
+    eager: true,
+  })
+  @JoinColumn()
+  public avatar!: Upload | null;
 
   @BeforeInsert()
   @BeforeUpdate()

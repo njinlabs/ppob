@@ -1,3 +1,4 @@
+import { RawProduct } from "@app-types/digiflazz.js";
 import {
   TransformCurrency,
   transformCurrency,
@@ -9,8 +10,10 @@ import { DateTime } from "luxon";
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   type Relation,
 } from "typeorm";
@@ -19,7 +22,7 @@ import Brand from "./brand.js";
 import Category from "./category.js";
 import PricingRule from "./pricing-rule.js";
 import Purchase from "./purchase.js";
-import { RawProduct } from "@app-types/digiflazz.js";
+import Upload from "./upload.js";
 
 @Entity()
 export default class Product extends Base {
@@ -81,6 +84,14 @@ export default class Product extends Base {
   @OneToMany(() => Purchase, (purchase) => purchase.product)
   @Type(() => Purchase)
   public purchases!: Purchase[];
+
+  @OneToOne(() => Upload, {
+    nullable: true,
+    cascade: true,
+    onDelete: "SET NULL",
+  })
+  @JoinColumn()
+  public image!: Upload | null;
 
   public toRaw(): RawProduct {
     return {

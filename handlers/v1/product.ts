@@ -62,7 +62,7 @@ const product = new Hono<App>()
         ...filters,
         where: {
           ...filters.where,
-          brandId: query.category,
+          categoryId: query.category,
         },
       };
     }

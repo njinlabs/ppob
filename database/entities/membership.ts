@@ -15,8 +15,8 @@ import {
 } from "typeorm";
 import Base from "./base.js";
 import MembershipPayment from "./membership-payment.js";
-import User from "./user.js";
 import PricingPackage from "./pricing-package.js";
+import User from "./user.js";
 
 @Entity()
 export default class Membership extends Base {
@@ -25,6 +25,9 @@ export default class Membership extends Base {
 
   @Column({ unique: true })
   public name!: string;
+
+  @Column()
+  public description!: string;
 
   @Column()
   public referralLimit!: number;

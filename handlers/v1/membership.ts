@@ -1,6 +1,7 @@
 import MembershipPayment from "@app-entities/membership-payment.js";
 import Membership from "@app-entities/membership.js";
 import User from "@app-entities/user.js";
+import acl from "@app-middlewares/acl.js";
 import auth from "@app-middlewares/auth.js";
 import validator from "@app-middlewares/validator.js";
 import verifyBalance from "@app-middlewares/verify-balance.js";
@@ -50,6 +51,9 @@ const membership = new Hono<App>()
 
       return c.json({ data });
     }
-  );
+  )
+  .get("/", validator("query", metaData), async (c) => {
+    return c.json(await withMeta(Membership, await c.req.valid("query")));
+  });
 
 export default membership;
