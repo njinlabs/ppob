@@ -13,6 +13,7 @@ import { FindManyOptions } from "typeorm";
 import { z } from "zod";
 
 const product = new Hono<App>()
+  .use(auth("user"))
   .get("/category", async (c) => {
     const categories = await Category.find({});
 
@@ -37,9 +38,15 @@ const product = new Hono<App>()
   .get(
     "/:entity",
     validator("param", uuidEntityParam(Product, "id")),
-    async (c) => c.json({ data: await c.req.valid("param") })
+    async (c) =>
+      c.json({
+        data: await calculateProductPricing(
+          await c.req.valid("param"),
+          c.var.auth.user! as User
+        ),
+      })
   )
-  .get("/", auth("user"), validator("query", productFilter), async (c) => {
+  .get("/", validator("query", productFilter), async (c) => {
     let filters: FindManyOptions<Product> = {
       order: {
         price: "ASC",

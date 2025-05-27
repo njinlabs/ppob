@@ -195,4 +195,36 @@ describe("User Auth", async () => {
 
     expect(response.status).toBe(200);
   });
+
+  test("User change password", async () => {
+    const user = (await User.find({ take: 1 }))[0];
+
+    const response = await client.v1.auth.login.$post({
+      json: {
+        email: user.phone,
+        password,
+      },
+    });
+
+    expect(response.status).toBe(200);
+
+    token = (await response.json()).data.token;
+    expect(token).toBeString();
+
+    const changeResponse = await client.v1.user.password.$put(
+      {
+        json: {
+          password,
+          newPassword: faker.internet.password(),
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    expect(changeResponse.status).toBe(200);
+  });
 });

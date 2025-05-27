@@ -4,6 +4,7 @@ import {
 } from "@app-utils/transform-currency.js";
 import { Transform, Type } from "class-transformer";
 import currency from "currency.js";
+import currencyWrap from "@app-utils/currency.js";
 import {
   Column,
   Entity,
@@ -41,8 +42,10 @@ export default class PricingRule extends Base {
       from: (value?: Pricing) =>
         value
           ? {
-              override: value.override ? currency(value.override) : undefined,
-              flat: value.flat ? currency(value.flat) : undefined,
+              override: value.override
+                ? currencyWrap(value.override)
+                : undefined,
+              flat: value.flat ? currencyWrap(value.flat) : undefined,
               percent: value.percent,
             }
           : {},
@@ -65,8 +68,8 @@ export default class PricingRule extends Base {
     ({ value }: { value?: Pricing }) =>
       value
         ? {
-            override: value.override ? currency(value.override) : undefined,
-            flat: value.flat ? currency(value.flat) : undefined,
+            override: value.override ? currencyWrap(value.override) : undefined,
+            flat: value.flat ? currencyWrap(value.flat) : undefined,
             percent: value.percent,
           }
         : {},

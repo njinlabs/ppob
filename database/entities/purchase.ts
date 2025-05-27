@@ -15,9 +15,9 @@ import {
 import { createId } from "@paralleldrive/cuid2";
 import { Type } from "class-transformer";
 import currency from "currency.js";
+import currencyWrap from "@app-utils/currency.js";
 import {
   AfterInsert,
-  AfterUpdate,
   BeforeInsert,
   Column,
   Entity,
@@ -28,8 +28,9 @@ import {
 import Base from "./base.js";
 import Product from "./product.js";
 import User from "./user.js";
+import { calculateProductPricing } from "@app-utils/pricing.js";
 
-@Entity()
+@Entity("purchases")
 export default class Purchase extends Base {
   @PrimaryGeneratedColumn("uuid")
   public id!: string;
@@ -96,6 +97,10 @@ export default class Purchase extends Base {
 
   @BeforeInsert()
   public async assignRequiredData() {
+    this.product.price = currency(
+      (await calculateProductPricing(this.product, this.user)).price
+    );
+
     if (this.product.type === "PASCA") {
       this.status = "INQUIRY";
       this.inq = await digiflazz().checkInq(this.product.toRaw(), {

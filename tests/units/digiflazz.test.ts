@@ -4,6 +4,7 @@ import { faker } from "@faker-js/faker";
 import { createId } from "@paralleldrive/cuid2";
 import { describe, expect, test } from "bun:test";
 import currency from "currency.js";
+import currencyWrap from "@app-utils/currency.js";
 
 function generateIndonesianPhoneNumber() {
   const prefix = "08";

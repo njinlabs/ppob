@@ -18,9 +18,14 @@ const membership = new Hono<App>()
     validator("param", membershipEntityParam),
     validator("json", composeMembership),
     async (c) => {
-      const membership = await (await c.req.valid("param"))
-        .assign(await c.req.valid("json"))
-        .save();
+      const { pricingId: pricing, ...data } = await c.req.valid("json");
+      const membership = (await c.req.valid("param")).assign(data);
+
+      if (pricing) {
+        membership.pricingId = pricing.id;
+      }
+
+      await membership.save();
 
       return c.json({ data: membership.serialize() });
     }
@@ -49,9 +54,14 @@ const membership = new Hono<App>()
     acl("membership:write"),
     validator("json", composeMembership),
     async (c) => {
-      const membership = await Membership.from(
-        await c.req.valid("json")
-      ).save();
+      const { pricingId: pricing, ...data } = await c.req.valid("json");
+      const membership = Membership.from(data);
+
+      if (pricing) {
+        membership.pricingId = pricing.id;
+      }
+
+      await membership.save();
 
       return c.json({ data: membership.serialize() });
     }

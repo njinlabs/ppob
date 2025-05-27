@@ -1,4 +1,5 @@
 import currency from "currency.js";
+import currencyWrap from "@app-utils/currency.js";
 import { DateTime } from "luxon";
 
 export type RawProduct = {

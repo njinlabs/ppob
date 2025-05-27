@@ -6,9 +6,11 @@ import validator from "@app-middlewares/validator.js";
 import db from "@app-modules/database.js";
 import { App } from "@app-types/app.js";
 import { addBalance } from "@app-utils/wallet.js";
-import { uuidEntityParam } from "@app-validations/general.js";
+import { withMeta } from "@app-utils/with-meta.js";
+import { metaData, uuidEntityParam } from "@app-validations/general.js";
 import { userTopUp } from "@app-validations/user.js";
 import { Hono } from "hono";
+import { FindManyOptions, ILike } from "typeorm";
 
 const user = new Hono<App>()
   .use(auth("admin"))
@@ -43,6 +45,35 @@ const user = new Hono<App>()
 
       return c.json({ data });
     }
-  );
+  )
+  .get("/", acl("user:list"), validator("query", metaData), async (c) => {
+    return c.json(
+      await withMeta(User, await c.req.valid("query"), ({ search }) => {
+        let filters: FindManyOptions<User> = {
+          relations: {
+            avatar: true,
+            membership: true,
+            wallet: true,
+          },
+        };
+
+        if (search) {
+          filters.where = [
+            {
+              fullname: ILike(`%${search}%`),
+            },
+            {
+              phone: ILike(`%${search?.replace(/^62|0/, "")}%`),
+            },
+            {
+              email: ILike(`%${search.toLowerCase()}%`),
+            },
+          ];
+        }
+
+        return filters;
+      })
+    );
+  });
 
 export default user;

@@ -1,10 +1,12 @@
 import log from "@app-modules/logger.js";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import { TypeORMError } from "typeorm";
 import auth from "./auth.js";
 import brand from "./brand.js";
+import category from "./category.js";
 import install from "./install.js";
 import membership from "./membership.js";
 import pricing from "./pricing.js";
@@ -13,6 +15,7 @@ import user from "./user.js";
 import v1 from "./v1/index.js";
 
 const app = new Hono()
+  .use(cors())
   .use("/uploads/*", serveStatic({ root: "./" }))
   .route("/v1", v1)
   .route("/auth", auth)
@@ -21,7 +24,8 @@ const app = new Hono()
   .route("/pricing", pricing)
   .route("/install", install)
   .route("/product", product)
-  .route("/brand", brand);
+  .route("/brand", brand)
+  .route("/category", category);
 
 app.onError(async (err, c) => {
   if (err instanceof HTTPException)

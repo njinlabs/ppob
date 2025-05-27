@@ -1,5 +1,6 @@
 import { Transform, Type } from "class-transformer";
 import currency from "currency.js";
+import currencyWrap from "@app-utils/currency.js";
 import { ValueTransformer } from "typeorm";
 
 export const transformCurrency: ValueTransformer = {
@@ -7,7 +8,11 @@ export const transformCurrency: ValueTransformer = {
     return value ? value.value.toFixed(2) : undefined;
   },
   from(value?: string | currency) {
-    return value ? (value instanceof currency ? value : currency(value)) : null;
+    return value
+      ? value instanceof currency
+        ? value
+        : currencyWrap(value)
+      : null;
   },
 };
 

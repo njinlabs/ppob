@@ -13,7 +13,14 @@ describe("Product API", async () => {
   const userToken = await auth().use("user").generate(user);
 
   test("Get categories list", async () => {
-    const response = await client.v1.product.category.$get();
+    const response = await client.v1.product.category.$get(
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
 
     expect(response.status).toBe(200);
   });
@@ -56,11 +63,18 @@ describe("Product API", async () => {
   });
 
   test("Get brand by phone number", async () => {
-    const response = await client.v1.product.brand[":phoneNumber"].$get({
-      param: {
-        phoneNumber: "6281271762774",
+    const response = await client.v1.product.brand[":phoneNumber"].$get(
+      {
+        param: {
+          phoneNumber: "6281271762774",
+        },
       },
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
 
     expect(response.status).toBe(200);
   });

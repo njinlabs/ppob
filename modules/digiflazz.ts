@@ -6,6 +6,7 @@ import {
 } from "@app-types/digiflazz.js";
 import axios, { AxiosError, AxiosInstance } from "axios";
 import currency from "currency.js";
+import currencyWrap from "@app-utils/currency.js";
 import { DateTime } from "luxon";
 import { createHash } from "node:crypto";
 
@@ -60,7 +61,7 @@ export class Digiflazz {
         username: this.config.username,
         sign: this.sign("depo"),
       })
-      .then(({ data }) => currency(data.data.deposit))
+      .then(({ data }) => currencyWrap(data.data.deposit))
       .catch(this.handleError<currency>);
   }
 
@@ -100,7 +101,7 @@ export class Digiflazz {
       desc: anyVal.desc ?? null,
       endCutOff,
       multi: Boolean(anyVal.multi),
-      price: currency(anyVal.price ?? 0),
+      price: currencyWrap(anyVal.price ?? 0),
       productName: anyVal.product_name,
       sellerName: anyVal.seller_ame,
       sellerProductStatus: Boolean(anyVal.seller_product_status),
@@ -132,7 +133,7 @@ export class Digiflazz {
           buyerSKUCode: value.buyer_sku_code,
           customerNumber: value.customer_no,
           message: value.message,
-          price: currency(value.price ?? 0),
+          price: currencyWrap(value.price ?? 0),
           refId: value.ref_id,
           status:
             value.status === "Pending"
@@ -171,7 +172,7 @@ export class Digiflazz {
           customerName: value.customer_name,
           customerNumber: value.customer_no,
           message: value.message,
-          price: currency(value.price ?? 0),
+          price: currencyWrap(value.price ?? 0),
           refId: value.ref_id,
           status:
             value.status === "Pending"
@@ -202,7 +203,7 @@ export class Digiflazz {
           customerName: value.customer_name,
           customerNumber: value.customer_no,
           message: value.message,
-          price: currency(value.price ?? 0),
+          price: currencyWrap(value.price ?? 0),
           refId: value.ref_id,
           status:
             value.status === "Pending"

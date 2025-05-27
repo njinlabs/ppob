@@ -6,6 +6,7 @@ import {
 import { TransformDate, transformDate } from "@app-utils/transform-date.js";
 import { Type } from "class-transformer";
 import currency from "currency.js";
+import currencyWrap from "@app-utils/currency.js";
 import { DateTime } from "luxon";
 import {
   Column,

@@ -6,6 +6,7 @@ import auth from "@app-modules/auth.js";
 import { faker } from "@faker-js/faker";
 import { describe, expect, test } from "bun:test";
 import currency from "currency.js";
+import currencyWrap from "@app-utils/currency.js";
 import { testClient } from "hono/testing";
 import { MoreThan } from "typeorm";
 
@@ -23,7 +24,7 @@ describe("Membership", async () => {
         await User.find({
           where: {
             wallet: {
-              balance: MoreThan(currency(0)),
+              balance: MoreThan(currencyWrap(0)),
             },
           },
           relations: {

@@ -11,6 +11,7 @@ import {
 } from "@app-utils/transform-fee.js";
 import { Type } from "class-transformer";
 import currency from "currency.js";
+import currencyWrap from "@app-utils/currency.js";
 import {
   BeforeInsert,
   Column,

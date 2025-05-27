@@ -1,4 +1,5 @@
 import currency from "currency.js";
+import currencyWrap from "@app-utils/currency.js";
 import { TransformCurrency } from "./transform-currency.js";
 import { ValueTransformer } from "typeorm";
 import { instanceToPlain, plainToInstance, Transform } from "class-transformer";
@@ -61,7 +62,7 @@ export function calculateFee(subtotal: currency, fees: Fee[] = []) {
   const result: Fee[] = [];
 
   for (const fee of fees) {
-    let amount = fee.amount || currency(0);
+    let amount = fee.amount || currencyWrap(0);
     if (!amount.value && fee.percentage) {
       amount = (fee.percentage.fromGrandTotal ? total : subtotal)
         .multiply(fee.percentage.value)

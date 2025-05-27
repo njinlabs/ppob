@@ -1,11 +1,12 @@
 import { z } from "zod";
 import { currency } from "./general.js";
 import Category from "@app-entities/category.js";
-import { In } from "typeorm";
+import { FindOptionsWhere, In } from "typeorm";
 import Brand from "@app-entities/brand.js";
 import Product from "@app-entities/product.js";
 import currencyLib from "currency.js";
 import { type Pricing } from "@app-entities/pricing-rule.js";
+import PricingPackage from "@app-entities/pricing-package.js";
 
 export const pricingRule = z
   .array(
@@ -132,3 +133,20 @@ export const composePricing = z.object({
   name: z.string(),
   rules: pricingRule,
 });
+
+export const pricingTransform =
+  <T extends keyof FindOptionsWhere<PricingPackage>>(field: T) =>
+  async (value: FindOptionsWhere<PricingPackage>[T], ctx: z.RefinementCtx) => {
+    const pricing = await PricingPackage.findOneBy({ [field]: value });
+
+    if (!pricing) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Not Found",
+      });
+
+      return z.NEVER;
+    }
+
+    return pricing;
+  };

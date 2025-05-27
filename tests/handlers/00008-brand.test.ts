@@ -33,4 +33,23 @@ describe("Brand API", async () => {
 
     expect(response.status).toBe(200);
   });
+
+  test("Read brand list", async () => {
+    const response = await client.brand.$get(
+      {
+        query: {
+          page: "1",
+          perPage: "200",
+          search: "",
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    expect(response.status).toBe(200);
+  });
 });

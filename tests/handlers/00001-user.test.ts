@@ -13,6 +13,21 @@ describe("User", async () => {
     .use("admin")
     .generate((await Admin.find())[0]);
 
+  test("User list", async () => {
+    const response = await client.user.$get(
+      {
+        query: {},
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    expect(response.status).toBe(200);
+  });
+
   test("Direct topup to user", async () => {
     const user = (await User.find({ relations: { wallet: true } }))[0];
 

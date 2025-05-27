@@ -1,4 +1,5 @@
 import User from "@app-entities/user.js";
+import WalletLedger from "@app-entities/wallet-ledger.js";
 import Wallet from "@app-entities/wallet.js";
 import auth from "@app-middlewares/auth.js";
 import validator from "@app-middlewares/validator.js";
@@ -11,10 +12,10 @@ const wallet = new Hono<App>()
   .use(auth("user"))
   .get("/history", validator("query", metaData), async (c) => {
     return c.json(
-      await withMeta(Wallet, await c.req.valid("query"), () => ({
+      await withMeta(WalletLedger, await c.req.valid("query"), () => ({
         where: {
-          user: {
-            id: c.var.auth.user?.id,
+          wallet: {
+            userId: c.var.auth.user!.id,
           },
         },
         order: {

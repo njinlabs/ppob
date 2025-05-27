@@ -4,6 +4,7 @@ import TopUp from "@app-entities/topup.js";
 import WalletLedger from "@app-entities/wallet-ledger.js";
 import Wallet from "@app-entities/wallet.js";
 import currency from "currency.js";
+import currencyWrap from "@app-utils/currency.js";
 import { EntityManager } from "typeorm";
 
 export const addBalance = async (
@@ -17,7 +18,7 @@ export const addBalance = async (
     .setLock("pessimistic_write")
     .getOneOrFail();
 
-  let add = currency(0);
+  let add = currencyWrap(0);
   let eventDetail: WalletLedger["event"] = {};
 
   if (event instanceof TopUp) {
@@ -29,7 +30,7 @@ export const addBalance = async (
       },
     };
   } else if (event instanceof MembershipPayment) {
-    add = currency(0).subtract(event.total);
+    add = currencyWrap(0).subtract(event.total);
     eventDetail = {
       membership: {
         id: event.id,
@@ -37,7 +38,7 @@ export const addBalance = async (
       },
     };
   } else if (event instanceof Purchase) {
-    add = currency(0).subtract(event.total);
+    add = currencyWrap(0).subtract(event.total);
     eventDetail = {
       purchase: {
         id: event.id,

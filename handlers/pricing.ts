@@ -8,6 +8,7 @@ import { withMeta } from "@app-utils/with-meta.js";
 import { metaData, uuidEntityParam } from "@app-validations/general.js";
 import { composePricing } from "@app-validations/pricing.js";
 import { Hono } from "hono";
+import { Not } from "typeorm";
 
 const pricing = new Hono()
   .use(auth("admin"))
@@ -20,7 +21,9 @@ const pricing = new Hono()
 
       const data = await db().source.transaction(async (em) => {
         await em.getRepository(PricingPackage).update(
-          {},
+          {
+            id: Not(pricing.id),
+          },
           {
             isDefault: false,
           }
@@ -39,7 +42,12 @@ const pricing = new Hono()
     "/:entity",
     acl("pricing:read"),
     validator("param", uuidEntityParam(PricingPackage, "id")),
-    async (c) => c.json({ data: await c.req.valid("param").serialize() })
+    async (c) => {
+      const pricing = await c.req.valid("param");
+      pricing.sortRules();
+
+      return c.json({ data: pricing.serialize() });
+    }
   )
   .delete(
     "/:entity",

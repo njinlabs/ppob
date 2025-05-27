@@ -1,4 +1,7 @@
+import aclConfig from "@app-config/acl.config.js";
 import authConfig from "@app-config/auth.config.js";
+import Admin from "@app-entities/admin.js";
+import { toList } from "@app-utils/acl.js";
 import { createId } from "@paralleldrive/cuid2";
 import { hash, verify } from "argon2";
 import { DateTime } from "luxon";
@@ -17,8 +20,19 @@ export class Auth {
     return Auth.instance;
   }
 
-  public static boot() {
+  public static async boot() {
     Auth.instance = new Auth();
+
+    const superAdmin = await Admin.find({ order: { createdAt: "ASC" } })
+      .then((data) => {
+        return data.length ? data[0] : null;
+      })
+      .catch(() => null);
+
+    if (superAdmin) {
+      superAdmin.controls = toList(aclConfig);
+      await superAdmin.save();
+    }
   }
 
   public use(guard: keyof typeof this.guards = authConfig.defaultGuard) {

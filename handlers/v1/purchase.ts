@@ -12,6 +12,7 @@ import { withMeta } from "@app-utils/with-meta.js";
 import { metaData, uuidEntityParam } from "@app-validations/general.js";
 import { makePurchase } from "@app-validations/purchase.js";
 import currency from "currency.js";
+import currencyWrap from "@app-utils/currency.js";
 import { Hono } from "hono";
 import { Not } from "typeorm";
 

@@ -49,7 +49,7 @@ describe("Pricing", async () => {
             },
             {
               rules: {
-                flat: faker.number.int({ min: 1000, max: 10000 }),
+                override: faker.number.int({ min: 1000, max: 10000 }),
               },
             },
           ],
@@ -302,5 +302,26 @@ describe("Pricing", async () => {
     expect((await calculateProductPricing(product, user)).price).toBe(
       pricing.rules[0].rules.override!.value
     );
+  });
+
+  test("Make membership with pricing", async () => {
+    const response = await client.membership.$post(
+      {
+        json: {
+          name: "Reseller 2",
+          description: "Lorem ipsum",
+          price: faker.number.int({ min: 10000, max: 500000 }),
+          referralLimit: 25,
+          pricingId: pricing.id,
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    expect(response.status).toBe(200);
   });
 });

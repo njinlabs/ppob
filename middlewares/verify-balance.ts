@@ -3,6 +3,7 @@ import Wallet from "@app-entities/wallet.js";
 import { App } from "@app-types/app.js";
 import { calculateFee } from "@app-utils/transform-fee.js";
 import currency from "currency.js";
+import currencyWrap from "@app-utils/currency.js";
 import { Context } from "hono";
 import { createMiddleware } from "hono/factory";
 

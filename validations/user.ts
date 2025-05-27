@@ -35,3 +35,8 @@ export const updateProfile = z.object({
     .optional()
     .nullable(),
 });
+
+export const updatePassword = z.object({
+  password: z.string(),
+  newPassword: z.string(),
+});

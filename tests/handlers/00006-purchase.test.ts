@@ -3,8 +3,10 @@ import Purchase from "@app-entities/purchase.js";
 import User from "@app-entities/user.js";
 import app from "@app-handlers/index.js";
 import auth from "@app-modules/auth.js";
+import { calculateProductPricing } from "@app-utils/pricing.js";
 import { describe, expect, test } from "bun:test";
 import currency from "currency.js";
+import currencyWrap from "@app-utils/currency.js";
 import { testClient } from "hono/testing";
 import { MoreThan } from "typeorm";
 
@@ -15,7 +17,7 @@ describe("Purchase API", async () => {
     await User.find({
       where: {
         wallet: {
-          balance: MoreThan(currency(0)),
+          balance: MoreThan(currencyWrap(0)),
         },
       },
       relations: {
@@ -45,10 +47,14 @@ describe("Purchase API", async () => {
       }
     );
 
+    const { price } = await calculateProductPricing(product, user);
+
+    const { total } = (await response.json()).data;
+
+    expect(total).toBe(price);
+
     expect(response.status).toBe(200);
-    const balanceExpected = user.wallet.balance.subtract(
-      currency((await response.json()).data.total)
-    );
+    const balanceExpected = user.wallet.balance.subtract(currencyWrap(total));
 
     await user.wallet.reload();
     expect(user.wallet.balance.value).toBe(balanceExpected.value);

@@ -2,6 +2,7 @@ import { init } from "@paralleldrive/cuid2";
 import { hash } from "argon2";
 import { Exclude, Type } from "class-transformer";
 import currency from "currency.js";
+import currencyWrap from "@app-utils/currency.js";
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -117,7 +118,7 @@ export default class User extends Base {
   @BeforeInsert()
   public async assignRequired() {
     this.referralCode = init({ length: 8 })().toUpperCase();
-    this.wallet = Wallet.from({ balance: currency(0) });
+    this.wallet = Wallet.from({ balance: currencyWrap(0) });
   }
 
   public async getPricing() {

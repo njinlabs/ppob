@@ -1,6 +1,7 @@
 import Product from "@app-entities/product.js";
 import User from "@app-entities/user.js";
 import currency from "currency.js";
+import currencyWrap from "@app-utils/currency.js";
 
 export async function calculateProductPricing(
   product: Product,
@@ -20,7 +21,7 @@ export async function calculateProductPricing(
   const products = (Array.isArray(product) ? product : [product]).map(
     (product) => {
       const data = product.serialize();
-      data.price = currency(data.price);
+      data.price = currencyWrap(data.price);
 
       if (pricing) {
         for (const item of pricing.rules) {

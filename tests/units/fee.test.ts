@@ -2,13 +2,14 @@ import { calculateFee } from "@app-utils/transform-fee.js";
 import { faker } from "@faker-js/faker";
 import { expect, test } from "bun:test";
 import currency from "currency.js";
+import currencyWrap from "@app-utils/currency.js";
 
 test("Calculate fee", () => {
   const data = Array(50)
     .fill(faker.number.int({ min: 1 }))
     .map((value: number) => {
-      const total = currency(value);
-      const shipping = currency(faker.number.int({ min: 1 }));
+      const total = currencyWrap(value);
+      const shipping = currencyWrap(faker.number.int({ min: 1 }));
       const percentage = total.multiply(5).divide(100);
       const all = total.add(shipping).add(percentage);
 
